@@ -1,0 +1,6 @@
+{
+  "name": "HourLog",
+  "description": "A dark, elegant, offline-first hour-by-hour lifelogging and productivity tracker app. Track activities, navigate via calendar, check insights, and export your history.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

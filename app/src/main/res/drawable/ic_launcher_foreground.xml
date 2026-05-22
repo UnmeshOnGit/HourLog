@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Sophisticated Hourglass Top Plate -->
+    <path
+        android:fillColor="#34D399"
+        android:pathData="M32,24 h44 v5 h-44 z" />
+        
+    <!-- Sophisticated Hourglass Bottom Plate -->
+    <path
+        android:fillColor="#34D399"
+        android:pathData="M32,79 h44 v5 h-44 z" />
+
+    <!-- Curved Glass Bulbs - Translucent filled + Solid Strokes -->
+    <path
+        android:fillColor="#1510B981"
+        android:strokeColor="#34D399"
+        android:strokeWidth="3"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M37,29 L71,29 L59,49 C56,53 56,55 59,59 L71,79 L37,79 L49,59 C52,55 52,53 49,49 Z" />
+
+    <!-- Golden Sand falling filter -->
+    <!-- Draining Top Sand -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M42,35 h24 C62,43 58,49 54,49 C50,49 46,43 42,35 Z" />
+
+    <!-- Flowing vertical stream of sand -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M53,49 h2 v30 h-2 z" />
+
+    <!-- Golden Accumulating Sand at base -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M40,79 C42,71 66,71 68,79 Z" />
+        
+    <!-- Aesthetic sparkling stars representing productivity -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M24,40 l1.5,1.5 l1.5,-1.5 l-1.5,-1.5 Z" />
+    <path
+        android:fillColor="#34D399"
+        android:pathData="M81,45 l2,2 l2,-2 l-2,-2 Z" />
+</vector>
