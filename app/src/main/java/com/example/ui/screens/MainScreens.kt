@@ -1153,6 +1153,31 @@ fun SearchScreen(viewModel: HourLogViewModel) {
 @Composable
 fun StatisticsScreen(viewModel: HourLogViewModel) {
     val allLogs by viewModel.allLogs.collectAsStateWithLifecycle()
+    var selectedInsightDate by remember { mutableStateOf(DateUtils.getTodayDateString()) }
+
+    val logsForSelectedDay = remember(allLogs, selectedInsightDate) {
+        allLogs.filter { it.date == selectedInsightDate }
+    }
+
+    val dayProductiveCount = remember(logsForSelectedDay) {
+        logsForSelectedDay.count { it.category == HourLogEntry.CATEGORY_PRODUCTIVE }
+    }
+
+    val dayWastingCount = remember(logsForSelectedDay) {
+        logsForSelectedDay.count { it.category == HourLogEntry.CATEGORY_WASTING }
+    }
+
+    val dayEssentialCount = remember(logsForSelectedDay) {
+        logsForSelectedDay.count { it.category == HourLogEntry.CATEGORY_ESSENTIAL }
+    }
+
+    val dayCollegeCount = remember(logsForSelectedDay) {
+        logsForSelectedDay.count { it.category == HourLogEntry.CATEGORY_COLLEGE }
+    }
+
+    val daySleepCount = remember(logsForSelectedDay) {
+        logsForSelectedDay.count { it.category == HourLogEntry.CATEGORY_SLEEP }
+    }
 
     // Aggregate statistics
     val nonNoneLogs = remember(allLogs) {
@@ -1259,6 +1284,226 @@ fun StatisticsScreen(viewModel: HourLogViewModel) {
                                 fontWeight = FontWeight.Black, 
                                 color = ColorSleep
                             )
+                        }
+                    }
+                }
+            }
+
+            // Day-Wise Daily Insights Section with arrows
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    border = BorderStroke(1.dp, ActiveBorderGray),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                ) {
+                    Column(modifier = Modifier.padding(18.dp)) {
+                        Text(
+                            text = "Day-Wise Action Breakdown",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        // Scrollable / Navigable Date string with left and right arrow buttons
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    selectedInsightDate = DateUtils.getOffsetDateString(selectedInsightDate, -1)
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Previous Day",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = DateUtils.formatToDisplay(selectedInsightDate),
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    textAlign = TextAlign.Center
+                                )
+                                Text(
+                                    text = DateUtils.getDayName(selectedInsightDate),
+                                    fontSize = 12.sp,
+                                    color = TextSecondaryMuted,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+
+                            IconButton(
+                                onClick = {
+                                    selectedInsightDate = DateUtils.getOffsetDateString(selectedInsightDate, 1)
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                    contentDescription = "Next Day",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(18.dp))
+
+                        // Show primary stats for this day: Productive and Wasting count
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            // Productive hours card inside
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(ColorProductive.copy(alpha = 0.12f))
+                                    .border(1.dp, ColorProductive.copy(alpha = 0.4f), RoundedCornerShape(12.dp))
+                                    .padding(12.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.CheckCircle,
+                                    contentDescription = "Productive Hours",
+                                    tint = ColorProductive,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Productive",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = ColorProductive
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "$dayProductiveCount hrs",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = ColorProductive
+                                )
+                            }
+
+                            // Wasting hours card inside
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(ColorWasting.copy(alpha = 0.12f))
+                                    .border(1.dp, ColorWasting.copy(alpha = 0.4f), RoundedCornerShape(12.dp))
+                                    .padding(12.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.QueryBuilder,
+                                    contentDescription = "Wasting Hours",
+                                    tint = ColorWasting,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Wasting",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = ColorWasting
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "$dayWastingCount hrs",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = ColorWasting
+                                )
+                            }
+                        }
+
+                        // Visually show Other categories logged (Sleep, Essential, College) for context
+                        val dayTotalSum = dayProductiveCount + dayWastingCount + dayEssentialCount + dayCollegeCount + daySleepCount
+                        if (dayTotalSum > 0) {
+                            Spacer(modifier = Modifier.height(18.dp))
+                            
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // Sleep
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(ColorSleep))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(text = "Sleep: $daySleepCount h", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                }
+                                // Essential
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(ColorEssential))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(text = "Essential: $dayEssentialCount h", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                }
+                                // College
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(ColorCollege))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(text = "College: $dayCollegeCount h", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                }
+                            }
+
+                            // Beautiful progressive segments ratio visualizer
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(6.dp)
+                                    .clip(RoundedCornerShape(3.dp)),
+                                horizontalArrangement = Arrangement.spacedBy(1.5.dp)
+                            ) {
+                                val floatProductive = dayProductiveCount.toFloat()
+                                val floatWasting = dayWastingCount.toFloat()
+                                val floatEssential = dayEssentialCount.toFloat()
+                                val floatCollege = dayCollegeCount.toFloat()
+                                val floatSleep = daySleepCount.toFloat()
+                                val totalSumVal = (floatProductive + floatWasting + floatEssential + floatCollege + floatSleep).coerceAtLeast(1f)
+
+                                if (dayProductiveCount > 0) {
+                                    Box(modifier = Modifier.weight(floatProductive / totalSumVal).fillMaxHeight().background(ColorProductive))
+                                }
+                                if (dayWastingCount > 0) {
+                                    Box(modifier = Modifier.weight(floatWasting / totalSumVal).fillMaxHeight().background(ColorWasting))
+                                }
+                                if (dayEssentialCount > 0) {
+                                    Box(modifier = Modifier.weight(floatEssential / totalSumVal).fillMaxHeight().background(ColorEssential))
+                                }
+                                if (dayCollegeCount > 0) {
+                                    Box(modifier = Modifier.weight(floatCollege / totalSumVal).fillMaxHeight().background(ColorCollege))
+                                }
+                                if (daySleepCount > 0) {
+                                    Box(modifier = Modifier.weight(floatSleep / totalSumVal).fillMaxHeight().background(ColorSleep))
+                                }
+                            }
+                        } else {
+                            Spacer(modifier = Modifier.height(18.dp))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "No activities logged for this day.",
+                                    fontSize = 12.sp,
+                                    color = TextSecondaryMuted,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                     }
                 }
